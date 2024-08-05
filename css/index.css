@@ -1,0 +1,124 @@
+body {
+  position: relative;
+  background-color: var(--semi-light-color);
+  height: 100vh;
+}
+/* welcome section */
+.container.welcome {
+  text-align: center;
+  margin-bottom: 50px;
+  padding-top: var(--padding-20);
+  padding-bottom: var(--padding-20);
+}
+.container h2.welcome {
+  margin: 0;
+  font-size: 50px;
+  color: var(--dark-color);
+}
+.container span.quote {
+  font-style: italic;
+  font-size: 20px;
+}
+/* end */
+
+/* form section */
+.container .get-information {
+  display: flex;
+  /* justify-content: center; */
+  align-items: center;
+  flex-direction: column;
+  background-color: var(--white-color);
+  border-radius: 10px;
+}
+.container .get-information h2 {
+  font-size: 60px;
+  margin: 0;
+
+  margin-bottom: 30px;
+  margin-top: 10px;
+  color: var(--light-color);
+}
+.container .get-information form {
+  width: calc(100% - 100px);
+  min-width: 200px;
+  display: flex;
+  justify-content: center;
+  align-items: left;
+  flex-direction: column;
+  position: relative;
+}
+.container .get-information form input {
+  margin-bottom: 25px;
+  border: 1px solid var(--extra-dark-color);
+  border-radius: 50px;
+}
+.container .get-information form input:focus {
+  border-width: 3px;
+  outline: none;
+}
+
+.container .get-information form label {
+  padding-left: 5px;
+  font-size: 15px;
+}
+
+.container .get-information form .password {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  margin-bottom: 25px;
+}
+.container .get-information form .password input {
+  flex: 1;
+
+  margin: 0;
+}
+.container .get-information form .password button {
+  cursor: pointer;
+  background: transparent;
+  border: none;
+  font-size: 25px;
+  margin-left: 20px;
+}
+.container .get-information form input[type="submit"] {
+  background: var(--dark-color);
+  color: var(--white-color);
+  font-size: 30px;
+  font-weight: bold;
+  padding: 10px 0px;
+  transition: var(--main-transition);
+  cursor: pointer;
+}
+.container .get-information form input[type="submit"]:hover {
+  background: var(--extra-dark-color);
+}
+.container .get-information form::after {
+  content: "";
+  height: 1px;
+  width: calc(100% - 60px);
+  background: var(--extra-dark-color);
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  bottom: 0;
+  margin-bottom: 10px;
+}
+.container .get-information .questions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  width: calc(100% - 100px);
+  padding: 0px 5px;
+  font-size: 15px;
+}
+.container .get-information .questions a {
+  color: var(--light-color);
+  transition: var(--main-transition);
+}
+.container .get-information .questions a:hover {
+  color: var(--extra-dark-color);
+}
+/* end */

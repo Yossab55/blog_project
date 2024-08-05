@@ -4,7 +4,9 @@ CREATE TABLE `user` (
   `user_password` varchar(30) NOT NULL,
   `user_date_of_birth` date DEFAULT NULL,
   `user_filename_profile` varchar(255) DEFAULT NULL,
-  PRIMARY KEY (`user_id`)
+  `user_email` varchar(255) NOT NULL,
+  PRIMARY KEY (`user_id`),
+  UNIQUE KEY `user_email_user_u` (`user_email`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci 
 
 CREATE TABLE `blog` (
@@ -16,7 +18,7 @@ CREATE TABLE `blog` (
   `blog_time` datetime DEFAULT NULL,
   PRIMARY KEY (`blog_id`),
   KEY `user_id_blog_fk` (`user_id`),
-  CONSTRAINT `user_id_blog_fk` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`)
+  CONSTRAINT `user_id_blog_fk` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`)  ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci
 
 CREATE TABLE `comment` (
@@ -28,8 +30,8 @@ CREATE TABLE `comment` (
   PRIMARY KEY (`comment_id`),
   KEY `blog_id_comment_fk` (`blog_id`),
   KEY `user_id_comment_fk` (`user_id`),
-  CONSTRAINT `blog_id_comment_fk` FOREIGN KEY (`blog_id`) REFERENCES `blog` (`blog_id`),
-  CONSTRAINT `user_id_comment_fk` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`)
+  CONSTRAINT `blog_id_comment_fk` FOREIGN KEY (`blog_id`) REFERENCES `blog` (`blog_id`)  ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `user_id_comment_fk` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`)  ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci
 
 CREATE TABLE `replay` (
@@ -40,8 +42,8 @@ CREATE TABLE `replay` (
   PRIMARY KEY (`replay_id`),
   KEY `user_id_replay_fk` (`user_id`),
   KEY `comment_id_replay_fk` (`comment_id`),
-  CONSTRAINT `comment_id_replay_fk` FOREIGN KEY (`comment_id`) REFERENCES `comment` (`comment_id`),
-  CONSTRAINT `user_id_replay_fk` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`)
+  CONSTRAINT `comment_id_replay_fk` FOREIGN KEY (`comment_id`) REFERENCES `comment` (`comment_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `user_id_replay_fk` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`)ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci
 
 CREATE TABLE `reaction` (
@@ -53,6 +55,6 @@ CREATE TABLE `reaction` (
   `reation_angry_count` varchar(15) DEFAULT NULL,
   KEY `user_id_reaction_fk` (`user_id`),
   KEY `blog_id_reaction_fk` (`blog_id`),
-  CONSTRAINT `blog_id_reaction_fk` FOREIGN KEY (`blog_id`) REFERENCES `blog` (`blog_id`),
-  CONSTRAINT `user_id_reaction_fk` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`)
+  CONSTRAINT `blog_id_reaction_fk` FOREIGN KEY (`blog_id`) REFERENCES `blog` (`blog_id`)  ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `user_id_reaction_fk` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci

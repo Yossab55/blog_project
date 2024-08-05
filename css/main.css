@@ -1,0 +1,44 @@
+:root {
+  --semi-light-color: #f8f4e1;
+  --light-color: #af8f6f;
+  --dark-color: #74512d;
+  --extra-dark-color: #543310;
+  --white-color: white;
+  --padding-20: 20px;
+  --main-transition : 0.3s ;
+}
+* {
+  box-sizing: border-box;
+}
+body {
+  font-family: "Mukta", sans-serif;
+  font-style: normal;
+  text-transform: capitalize;
+}
+a {
+  text-decoration: none;
+}
+.container {
+  padding-left: 10px;
+  padding-right: 10px;
+  margin-left: auto;
+  margin-right: auto;
+}
+/* small */
+@media (min-width: 768px) {
+  .container {
+    width: 750px;
+  }
+}
+/* meduim */
+@media (min-width: 992px) {
+  .container {
+    width: 970px;
+  }
+}
+/* large */
+@media (min-width: 1200px) {
+  .container {
+    width: 1170px;
+  }
+}
