@@ -3,6 +3,45 @@ body {
   background-color: var(--semi-light-color);
   height: 100vh;
 }
+/* error section */
+.container .over-lay {
+  width: 100vw;
+  height: 100vh;
+  position: absolute;
+  background: #00000087;
+  top: 0;
+  left: 0;
+  z-index: 1005;
+}
+.container .error {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: var(--white-color);
+  border-radius: 20px;
+  padding: var(--padding-20);
+  text-align: center;
+  z-index: 1006;
+}
+.container .error h2 {
+  font-size: 40px;
+  color:red;
+  margin: 0;
+  font-size: bold;
+}
+.container .error span {
+  display: block;
+  margin-top: 10px
+}
+.container .error span a {
+  color: var(--dark-color);
+  font-size: 15px;
+}
+
+
+/* end error section */
+
 /* welcome section */
 .container.welcome {
   text-align: center;
@@ -19,12 +58,11 @@ body {
   font-style: italic;
   font-size: 20px;
 }
-/* end */
+/* end welcome section */
 
 /* form section */
 .container .get-information {
   display: flex;
-  /* justify-content: center; */
   align-items: center;
   flex-direction: column;
   background-color: var(--white-color);
@@ -121,4 +159,4 @@ body {
 .container .get-information .questions a:hover {
   color: var(--extra-dark-color);
 }
-/* end */
+/* end form section*/
