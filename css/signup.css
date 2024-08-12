@@ -1,0 +1,133 @@
+body {
+  background-color: var(--semi-light-color);
+}
+.container {
+  padding: var(--padding-20);
+}
+
+.container .sign-up {
+  display: flex;
+  align-items: center;
+  background-color: var(--white-color);
+  padding: var(--padding-20);
+  border-radius: 20px;
+}
+.container .sign-up::before {
+  content: "";
+}
+.container .sign-up .information-section {
+  flex: 1;
+}
+
+.container .sign-up .information-section img {
+  border-radius: 50%;
+  width: 70px;
+}
+.container .sign-up .information-section .title {
+  position: relative;
+}
+.container .sign-up .information-section .title::before {
+  content: "";
+  width: 80%;
+  position: absolute;
+  height: 1px;
+  background: var(--dark-color);
+  left: 50%;
+  transform: translateX(-50%);
+  bottom: -10px;
+}
+.container .sign-up .information-section .title::after {
+  content: "";
+  width: 10px;
+  height: 10px;
+  position: absolute;
+  border-radius: 50%;
+  border: 5px solid var(--white-color);
+  background: var(--dark-color);
+  left: 50%;
+  transform: translateX(-50%);
+  bottom: -17.5px;
+}
+.container .sign-up .information-section .title h2 {
+  color: var(--dark-color);
+  margin: 0;
+  margin-top: var(--margin-10);
+}
+
+.container .sign-up .information-section .title p {
+  color: var(--light-color);
+  font-size: 1em;
+  margin: 0;
+  margin-top: var(--margin-10);
+  margin-bottom: var(--margin-10);
+}
+
+.container .sign-up .information-section .form-section form {
+  display: flex;
+  justify-content: left;
+  flex-direction: column;
+  padding-left: 10px;
+}
+.container .sign-up .information-section .form-section form input {
+  padding: 5px;
+  border-radius: 30px;
+  padding-left: 10px;
+  font-size: 1em;
+  border: 2px solid var(--dark-color);
+}
+.container .sign-up .information-section .form-section form input:focus {
+  outline: none;
+}
+.container .sign-up .information-section .form-section form label {
+  margin-left: -5px;
+  margin-bottom: 5px;
+  margin-top: 20px;
+  font-size: 0.9em;
+  color: var(--dark-color);
+}
+.container .sign-up .information-section .form-section form label:first-child {
+  margin-top: 10px;
+}
+.container .sign-up .information-section .form-section form span.dmy {
+  font-size: 0.8em;
+  padding-left: 10px;
+  opacity: 0.9;
+  color: var(--light-color);
+}
+.container .sign-up .information-section .form-section form label[for="pass"] {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.container
+  .sign-up
+  .information-section
+  .form-section
+  form
+  button[type="button"] {
+  font-size: 1.25em;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+}
+.container
+  .sign-up
+  .information-section
+  .form-section
+  form
+  button[type="submit"] {
+  width: 80%;
+  align-self: center;
+  color: white;
+  background: var(--dark-color);
+  margin-top: 20px;
+  padding: 10px 5px;
+  font-size: 2em;
+  font-weight: bold;
+  border: none;
+  border-radius: 30px;
+  cursor: pointer;
+}
+.container .sign-up .image-section img {
+  width: 300px;
+}

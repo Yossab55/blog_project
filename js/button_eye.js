@@ -1,6 +1,5 @@
 let button_eye = document.getElementById("button_eye");
 let input_password_type = document.getElementById("pass");
-console.log(button_eye.children);
 button_eye.addEventListener("click", function switchEye() {
   if (input_password_type.getAttribute("type") === "password") {
     input_password_type.setAttribute("type", "text");

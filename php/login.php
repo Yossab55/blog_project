@@ -91,7 +91,7 @@ if(check_request_submit()) {
           <input type="submit" name="login" value="submit">
         </form>
         <div class="questions">
-          <span class="sign-up"><a href="">you don't have an account (sign_in) ?</a></span>
+          <span class="sign-up"><a href="signup.php">you don't have an account (sign_in) ?</a></span>
           <span class="forget-password"><a href=""> did you forget your password?</a></span>
         </div>
       </div>
