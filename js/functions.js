@@ -1,3 +1,4 @@
+// eye change from hidden or shown by switching between input type password or text
 let button_eye = document.getElementById("button_eye");
 let input_password_type = document.getElementById("pass");
 button_eye.addEventListener("click", function switchEye() {
@@ -15,3 +16,16 @@ button_eye.addEventListener("click", function switchEye() {
     button_eye.appendChild(eye_open);
   }
 });
+
+export { button_eye as buttonEyeSwitch };
+// end eye change
+// ==========================================================================
+// start input date of birth manipulation ;
+let input_date_make_it_right = document.getElementById("dob");
+input_date_make_it_right.addEventListener('keydown', function makeItRight(event) {
+  
+
+});
+
+
+export {input_date_make_it_right as input_date};

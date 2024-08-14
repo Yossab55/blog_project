@@ -1,6 +1,26 @@
 <?php
 $script_name = basename($_SERVER['PHP_SELF'], ".php")  ;
 
+// get_id_for_new_user($database);
+if(check_request_submit()) {
+  $size = count($_POST);
+  $start_count = 0 ;
+  $data_is_null = [];
+  foreach($_POST as $data) {
+    if($data == null) $data_is_null[$start_count] = false ;
+    else $data_is_null[$start_count] = true ;
+    $start_count++ ;
+  }
+  if(is_all_null($data_is_null)) {
+    //todo i want to but every input is null an error message like a span on the month input
+
+
+    break ;
+  }
+  include('connect.php');
+  //todo insert values in user table and that's it good luck don't 
+  //note don't forget to but id user also have a good time brother
+}
 
 ?>
 <!DOCTYPE html>
@@ -164,6 +184,48 @@ $script_name = basename($_SERVER['PHP_SELF'], ".php")  ;
         </div>
       </div>
     </div>
-    <script src="../js/button_eye.js"></script>
+    <script src="../js/functions.js" type='module'></script>
+    <script src="../js/signup.js" type='module'></script>
   </body>
 </html>
+
+
+<?php
+function check_request_submit() {
+  if($_SERVER['REQUEST_METHOD'] === 'POST') {
+    if(!(is_null($_POST)))
+    return true ;
+  }
+  return false;
+}
+function is_all_null($data_is_null) {
+  foreach($data_is_null as $boolean) {
+    if($boolean) continue ;
+    else return false ;
+  }
+  return true ;
+}
+function get_id_for_new_user($database) {
+  $sql = 'SELECT id_increment FROM increment' ;
+  $statement = $database->prepare($sql);
+  $statement->execute();
+  $result = $statement->fetchAll();
+  if($result[0][0] === null) {
+    insert_one_into_increment($database);
+    return 1;
+  } else {
+    $result[0][0] ++ ;
+    update_id_from_column_increment($database, $result[0][0]);
+    return $result[0][0];
+  }
+}
+
+function update_id_from_column_increment($database, $number_after_increment) {
+  $sql = 'UPDATE increment SET id_increment = ?';
+  $statement = $database->prepare($sql)->execute([$number_after_increment]);
+}
+function insert_one_into_increment($database) {
+  $sql = 'INSERT INTO increment VALUES (?, ?)';
+  $statement = $database->prepare($sql);
+  $statement->execute([1,1]);
+}

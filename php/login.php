@@ -9,7 +9,7 @@ if( !(isset($_POST['eye'])) || is_null($_POST['eye']) ) {
   $password_or_text = 'password';
 }
 
-if(check_request_submit()) {
+if(check_request_post_login()) {
   include("php/connect.php");
   $emails = get_emails_user($database);
   $passwords = get_passwords_user($database);
@@ -97,7 +97,9 @@ if(check_request_submit()) {
       </div>
     </div>
     <!-- end form section -->
-    <script src="../js/button_eye.js"></script>
+    <script src="../js/functions.js" type='module'></script>
+    <script src="../js/login.js" type='module'></script>
+
   </body>
 </html>
 
@@ -106,14 +108,8 @@ if(check_request_submit()) {
 // function section
 
 // check request section 
-function check_request_eye_to_put_data() {
-  if($_SERVER['REQUEST_METHOD'] ==='POST') {
-    if(isset($_POST['eye']) )
-    return true ;
-  }
-  return false;
-}
-function check_request_submit() {
+
+function check_request_post_login() {
   if($_SERVER['REQUEST_METHOD'] === 'POST') {
     if(isset($_POST['login']) && !(is_null($_POST)))
     return true ;
