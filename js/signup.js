@@ -1,1 +1,1 @@
-import { input_date } from "./functions.js";
+import { buttonSignup  } from "./functions.js";
