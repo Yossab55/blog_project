@@ -16,9 +16,10 @@ CREATE TABLE `blog` (
   `blog_text` text NOT NULL,
   `blog_filename_image` varchar(255) DEFAULT NULL,
   `blog_time` datetime DEFAULT NULL,
+  `categories` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`blog_id`),
   KEY `user_id_blog_fk` (`user_id`),
-  CONSTRAINT `user_id_blog_fk` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`)  ON DELETE CASCADE ON UPDATE CASCADE
+  CONSTRAINT `user_id_blog_fk` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci
 
 CREATE TABLE `comment` (

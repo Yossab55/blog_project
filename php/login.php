@@ -1,6 +1,8 @@
 <?php
+include('../php/functions.php');
+$script_name = get_script_name();
+$path = get_path_name_depend_on($script_name);
 
-$script_name = basename($_SERVER['PHP_SELF'], ".php")  ;
 $is_error = false ;
 $message_is_error = "";
 $index_and_boolean_email = [];

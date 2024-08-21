@@ -1,6 +1,7 @@
 <?php
-//todo search is there a dom in php
-$script_name = basename($_SERVER['PHP_SELF'], ".php")  ;
+include('../php/functions.php');
+$script_name = get_script_name();
+$path = get_path_name_depend_on($script_name);
 
 $error_exist = false ;
 $keys_data_from_post = array_keys($_POST);
@@ -19,6 +20,7 @@ if(check_request_submit()) {
 
   if(! $error_exist) {
     include('connect.php');
+    set_id_in_cookie($database);
     insert_data_and_go_to_home($database);
   }
   
@@ -108,7 +110,7 @@ function get_id_for_new_user($database) {
   $statement = $database->prepare($sql);
   $statement->execute();
   $result = $statement->fetchAll();
-  if($result[0][0] === null) {
+  if($result === null) {
     insert_one_into_increment($database);
     return 1;
   } else {
@@ -129,7 +131,7 @@ function insert_one_into_increment($database) {
 }
 function insert_data_in_user_table($database) {
   $data = [
-    'id' => $_POST['user_id'],
+    'id' => $_COOKIE['user-id'],
     'full_name' => $_POST['first-name'] . " " . $_POST['last-name'],
     'pass' => $_POST['password'],
     'email' => $_POST['email'],
@@ -140,7 +142,13 @@ function insert_data_in_user_table($database) {
   $statement = $database->prepare($sql);
   $statement->execute($data);
 }
-
+function set_id_in_cookie($database) {
+  setcookie('user-id', get_id_for_new_user($database),time() + strtotime('+1 year'), '/');
+}
+function insert_data_and_go_to_home($database) {
+  insert_data_in_user_table($database) ;
+  header('location: ../index.php');
+}
 function get_date() {
   $part = explode('/',$_POST['date-of-birth']);
   $result = $part[0] . '-' . $part[1] . '-' .$part[2];
@@ -150,11 +158,7 @@ function is_data_null($data) {
   if($data == null) return true ;
   return false ;
 }
-function insert_data_and_go_to_home($database) {
-  $_POST['user_id'] = get_id_for_new_user($database);
-  insert_data_in_user_table($database) ;
-  header('location: ../index.php?id='.$_POST['user_id']);
-}
+
 
 function put_message_error_html_element($data) {
   return "<span class='error'> $data can't be empty!!</span>";

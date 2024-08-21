@@ -29,13 +29,6 @@ let inputsFiled = document.getElementsByTagName("input");
 buttonSignup.addEventListener("click", function stopData(e) {
   for (let i = 0; i < inputsFiled.length; i++) {
     if (inputsFiled[i].value == null) {
-      let spanError = document.createElement("span");
-      spanError.setAttribute("class", "error");
-      let spanErrorMessage =
-        inputsFiled[i].getAttribute("name").split("-").join(" ") +
-        "Can't be empty";
-      spanError.append(spanErrorMessage);
-      spanError.after(inputsFiled[i]);
       e.preventDefault();
     }
   }
