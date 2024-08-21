@@ -88,10 +88,16 @@ body {
 .container .sign-up .information-section .form-section form label:first-child {
   margin-top: 10px;
 }
-.container .sign-up .information-section .form-section form span.dmy {
+.container .sign-up .information-section .form-section form span.dmy,
+.container .sign-up .information-section .form-section form span.error {
   font-size: 0.8em;
   padding-left: 10px;
   opacity: 0.9;
+}
+.container .sign-up .information-section .form-section form span.error {
+  color: var(--error-color);
+}
+.container .sign-up .information-section .form-section form span.dmy {
   color: var(--light-color);
 }
 .container .sign-up .information-section .form-section form label[for="pass"] {
@@ -130,4 +136,9 @@ body {
 }
 .container .sign-up .image-section img {
   width: 300px;
+}
+@media (max-width: 764px) {
+  .container .sign-up .image-section img {
+    display: none;
+  }
 }

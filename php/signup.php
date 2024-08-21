@@ -1,20 +1,27 @@
 <?php
+//todo search is there a dom in php
 $script_name = basename($_SERVER['PHP_SELF'], ".php")  ;
 
+$error_exist = false ;
+$keys_data_from_post = array_keys($_POST);
+$counter_data = 0 ;
+$array_data_name_error = [];
 if(check_request_submit()) {
   
-  if() {
-    //todo i want to but every input is null an error message like a span on the month input
+  foreach($keys_data_from_post as $key) {
 
-
-  
-  } else {
-
-    include('connect.php');
-    $_POST['user_id'] = get_id_for_new_user($database);
-    insert_data_in_user_table($database) ;
-    header('location: ../index.php');
+    if(is_data_null($_POST[$key])) {
+      $error_exist = true ;
+      $array_data_name_error[$counter_data] = [true, join(" ",explode('-', $key))];
+    } else $array_data_name_error[$counter_data] = [false, join(" ",explode('-', $key))];
+    $counter_data++ ;
   }
+
+  if(! $error_exist) {
+    include('connect.php');
+    insert_data_and_go_to_home($database);
+  }
+  
 }
 
 ?>
@@ -33,14 +40,30 @@ if(check_request_submit()) {
             <div class="form-section">
               <form action="" method="post">
                 <label for="f-name">first name</label>
+                <?php 
+                  if(! (isset($array_data_name_error))&& $array_data_name_error[0][0] == true  ) 
+                  echo put_message_error_html_element($array_data_name_error[0][1]);
+                ?>
                 <input type="text" name="first-name" id="f-name">
                 <label for="l-name">last name</label>
                 <input type="text" name="last-name" id="l-name">
+                <?php 
+                  if(! (isset($array_data_name_error))&& $array_data_name_error[1][0] == true  ) 
+                  echo put_message_error_html_element($array_data_name_error[1][1]);
+                ?>
                 <label for="email">email</label>
                 <input type="email" name="email" id="email">                
+                <?php 
+                  if(! (isset($array_data_name_error))&& $array_data_name_error[2][0] == true  ) 
+                  echo put_message_error_html_element($array_data_name_error[2][1]);
+                ?>
                 <label for="dob">date of birth</label>
                 <input type="text" name="date-of-birth" id="dob" placeholder='YYYY/MM/DD'>
                 <span class="dmy">Year, Month, Day</span>
+                <?php 
+                  if(! (isset($array_data_name_error))&& $array_data_name_error[3][0] == true  ) 
+                  echo put_message_error_html_element($array_data_name_error[3][1]);
+                ?>
                 <label for="pass">
                   <span>password</span>
                   <button type="button" name='eye' id= 'button_eye'>
@@ -48,6 +71,10 @@ if(check_request_submit()) {
                   </button>
                 </label>
                 <input type="password" name="password" id="pass" >
+                <?php 
+                  if(! (isset($array_data_name_error))&& $array_data_name_error[4][0] == true  ) 
+                  echo put_message_error_html_element($array_data_name_error[4][1]);
+                ?>
                 <button type="submit" value='signup' id='signup'>
                   Sign Up
                 </button>
@@ -118,4 +145,17 @@ function get_date() {
   $part = explode('/',$_POST['date-of-birth']);
   $result = $part[0] . '-' . $part[1] . '-' .$part[2];
   return $result ;
+}
+function is_data_null($data) {
+  if($data == null) return true ;
+  return false ;
+}
+function insert_data_and_go_to_home($database) {
+  $_POST['user_id'] = get_id_for_new_user($database);
+  insert_data_in_user_table($database) ;
+  header('location: ../index.php?id='.$_POST['user_id']);
+}
+
+function put_message_error_html_element($data) {
+  return "<span class='error'> $data can't be empty!!</span>";
 }
