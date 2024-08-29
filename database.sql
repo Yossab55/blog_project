@@ -9,6 +9,15 @@ CREATE TABLE `user` (
   UNIQUE KEY `user_email_user_u` (`user_email`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci 
 
+CREATE TABLE `userfriend` (
+  `user_id` int(11) NOT NULL,
+  `friend_id` int(11) DEFAULT NULL,
+  KEY `user_id_userFriend_fk` (`user_id`),
+  KEY `friend_id_userFriend_fk` (`friend_id`),
+  CONSTRAINT `friend_id_userFriend_fk` FOREIGN KEY (`friend_id`) REFERENCES `user` (`user_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `user_id_userFriend_fk` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci |
+
 CREATE TABLE `blog` (
   `blog_id` int(11) NOT NULL,
   `user_id` int(11) NOT NULL,
@@ -34,6 +43,13 @@ CREATE TABLE `comment` (
   CONSTRAINT `blog_id_comment_fk` FOREIGN KEY (`blog_id`) REFERENCES `blog` (`blog_id`)  ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `user_id_comment_fk` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`)  ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci
+
+CREATE TABLE `category` (
+  `category_id` int(11) NOT NULL,
+  `category_name` varchar(100) NOT NULL,
+  PRIMARY KEY (`category_id`),
+  UNIQUE KEY `category_name_u` (`category_name`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci |
 
 CREATE TABLE `replay` (
   `replay_id` int(11) NOT NULL,

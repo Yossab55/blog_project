@@ -1,5 +1,5 @@
 .circled-img {
-  width: 70px;
+  width: 50px;
   border-radius: 50%;
 }
 /* start nav section */
@@ -11,6 +11,8 @@ nav {
   align-items: center;
   box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
   padding: 20px;
+  position: relative;
+  z-index: 2002;
 }
 nav .section-1 {
   display: flex;
@@ -28,7 +30,6 @@ nav .section-1 input {
   border: 1px solid var(--dark-color);
   box-shadow: var(--dark-color) 0px 1px 10px -4px;
   transition: var(--main-transition);
-
 }
 nav .section-1 input:focus {
   box-shadow: var(--dark-color) 2px 1px 13px 2px;
@@ -46,3 +47,118 @@ nav .section-1 button {
 }
 
 /* end nav section */
+
+/* start main content */
+.main-content {
+  display: flex;
+}
+/* start aside bar  */
+aside {
+  min-height: 100vh;
+}
+.page-links {
+  padding-top: 20px;
+  width: 200px;
+  height: calc(100vh - 100px);
+  background-color: white;
+  position: relative;
+  z-index: 1000;
+  box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+}
+.page-links li {
+  padding: 10px;
+  padding-left: 20px;
+  transition: var(--main-transition);
+  position: relative;
+  z-index: 1002;
+}
+
+.page-links li:before {
+  content: " ";
+  width: 0;
+  height: 0;
+  background-color: var(--semi-light-color);
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 1001;
+  transition: var(--main-transition);
+}
+.page-links li:hover {
+  padding-left: 30px;
+}
+.page-links li:hover:before {
+  width: 100%;
+  height: 100%;
+}
+.page-links li i {
+  margin-right: 5px;
+}
+.page-links li a {
+  color: var(--dark-color);
+  position: relative;
+  z-index: 1002;
+}
+/* end aside bar  */
+
+/* start section */
+.main-content section {
+  flex: 1 ;
+  max-width: 900px;
+  margin: 15px auto;
+  padding: 10px;
+  background-color: var(--semi-light-color);
+  border-radius: 20px;
+}
+.main-content section .user-information {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.main-content section .user-information .content {
+  display: flex;
+}
+.main-content section .user-information .user-name {
+  margin-left: 5px;
+  margin-top : 12px;
+  font-size : 1.1em;
+  color: var(--dark-color);
+  align-self:flex-start;
+}
+.main-content section .user-information form button {
+background-color: var(--dark-color);
+  padding: 8px 10px;
+  border: none aliceblue;
+  border-radius: 10px;
+  cursor: pointer;
+  color: var(--white-color);
+}
+.main-content section .box {
+  background-color: white;
+  border-radius: 20px;
+  padding: 20px;
+}
+.main-content section .box:not(:first-child) {
+  margin-top: 30px;
+}
+.main-content section .box h2 {
+  margin: 0;
+  margin-top: 10px;
+  font-size: 22px;
+}
+.main-content section .box p {
+  margin: 0px ;
+  margin-top: 10px ;
+  font-size: 20px;
+}
+.main-content section .box img.blog-img {
+  width:100%;
+  height: 300px;
+  margin-top: 10px ;
+  border: 1px solid var(--extra-dark-color);
+  border-radius: 10px;
+}
+/* end section */
+
+/* end main content */

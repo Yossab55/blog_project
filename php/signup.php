@@ -11,7 +11,7 @@ if(check_request_submit()) {
   
   foreach($keys_data_from_post as $key) {
 
-    if(is_data_null($_POST[$key])) {
+    if($_POST[$key] == null) {
       $error_exist = true ;
       $array_data_name_error[$counter_data] = [true, join(" ",explode('-', $key))];
     } else $array_data_name_error[$counter_data] = [false, join(" ",explode('-', $key))];
@@ -97,6 +97,7 @@ if(check_request_submit()) {
 
 
 <?php
+
 function check_request_submit() {
   if($_SERVER['REQUEST_METHOD'] === 'POST') {
     if(!(is_null($_POST)))
@@ -105,6 +106,9 @@ function check_request_submit() {
   return false;
 }
 
+function set_id_in_cookie($database) {
+  setcookie('user-id', get_id_for_new_user($database),time() + strtotime('+1 year'), '/');
+}
 function get_id_for_new_user($database) {
   $sql = 'SELECT id_increment FROM increment' ;
   $statement = $database->prepare($sql);
@@ -119,15 +123,18 @@ function get_id_for_new_user($database) {
     return $result[0][0];
   }
 }
-
+function insert_one_into_increment($database) {
+  $sql = 'INSERT INTO increment VALUES (?, ?)';
+  $statement = $database->prepare($sql);
+  $statement->execute([1,null]);
+}
 function update_id_from_column_increment($database, $number_after_increment) {
   $sql = 'UPDATE increment SET id_increment = ?';
   $statement = $database->prepare($sql)->execute([$number_after_increment]);
 }
-function insert_one_into_increment($database) {
-  $sql = 'INSERT INTO increment VALUES (?, ?)';
-  $statement = $database->prepare($sql);
-  $statement->execute([1,1]);
+function insert_data_and_go_to_home($database) {
+  insert_data_in_user_table($database) ;
+  header('location: ../index.php');
 }
 function insert_data_in_user_table($database) {
   $data = [
@@ -142,24 +149,11 @@ function insert_data_in_user_table($database) {
   $statement = $database->prepare($sql);
   $statement->execute($data);
 }
-function set_id_in_cookie($database) {
-  setcookie('user-id', get_id_for_new_user($database),time() + strtotime('+1 year'), '/');
-}
-function insert_data_and_go_to_home($database) {
-  insert_data_in_user_table($database) ;
-  header('location: ../index.php');
-}
 function get_date() {
   $part = explode('/',$_POST['date-of-birth']);
   $result = $part[0] . '-' . $part[1] . '-' .$part[2];
   return $result ;
 }
-function is_data_null($data) {
-  if($data == null) return true ;
-  return false ;
-}
-
-
 function put_message_error_html_element($data) {
   return "<span class='error'> $data can't be empty!!</span>";
 }
