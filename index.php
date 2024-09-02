@@ -4,6 +4,7 @@ include('php/connect.php');
 $script_name = get_script_name();
 $path = get_path_name_depend_on($script_name);
 setcookie('user-id',1 ,time() + strtotime('+1 year'), '/');
+//todo buttons comment and like add friend there is no request for them 
 ?>
 
 
@@ -69,22 +70,28 @@ setcookie('user-id',1 ,time() + strtotime('+1 year'), '/');
         }
       ?>
       <div class='box'> 
-    <div class='user-information'> 
-      <div class="content">
-        <img src='images/profile_images/default.png' alt='' class ='circled-img'> 
-        <span class='user-name'>user name </span> 
-      </div>
-      <form action= 'index.php' method= 'get'>
-        <button type='submit' name='add-content' value='add-friend'>
-          <span class='button'>Add Contact </span>
-          <i class='fa-solid fa-plus'></i>
-        </button>
-      </form>
-    </div> 
-    <h2 id='blog-title'>Hello world</h2> 
-    <p id='blog-text'>I'm a new user in bloger, I'm trying to learn how to make a nodes</p> 
-    <img src='images/blog_images/test.jpg' alt='' class='blog-img'> 
-  </div> 
+        <div class='user-information'> 
+          <div class="information">
+            <img src='images/profile_images/default.png' alt='' class ='circled-img'> 
+            <span class='user-name'>user name </span> 
+          </div>
+          <form action= 'index.php' method= 'get'>
+            <button type='submit' name='add-content' value='add-friend'>
+              <span class='button'>Add Contact </span>
+              <i class='fa-solid fa-plus'></i>
+            </button>
+          </form>
+        </div> 
+        <div class='content'>
+          <h2 id='blog-title'>Hello world</h2> 
+          <p id='blog-text'>I'm a new user in bloger, I'm trying to learn how to make a nodes</p> 
+          <img src='images/blog_images/test.jpg' alt='' class='blog-img'> 
+        </div>
+        <div class='buttons'>
+          <a href='php/comment.php?blog-id=?' title='comment'><i class='fa-regular fa-comment'></i></a>
+          <a href='php/like.php'><i class='fa-regular fa-thumbs-up'></i></a>
+        </div>
+      </div> 
     </section>
   </div>
 </body>
@@ -109,7 +116,7 @@ function get_user_profile_pic_from($database) {
 }
 function get_friend_blogs($database) {
     $sql = 
-      'SELECT f.friend_id, b.blog_title, b.blog_text, b.blog_filename_image,
+      'SELECT f.friend_id, b.blog_id, b.blog_title, b.blog_text, b.blog_filename_image,
       b.blog_time, b.categories
       FROM  userfriend as f
       INNER JOIN userfriend as u 
@@ -121,6 +128,15 @@ function get_friend_blogs($database) {
     $statement = $database->prepare($sql);
     $statement->execute();
     return $statement->fetchAll(PDO::FETCH_DEFAULT);
+}
+function get_random_blogs($database) {
+  $sql = 
+    'SELECT blog_id, blog_title, blog_text, blog_filename_image,
+    blog_time, categories FROM blog '. make_where_statement($database) 
+    .' AND NOT user_id = '. $_COOKIE['user-id']. ' ORDER BY blog_time' ;
+  $statement = $database->prepare($sql);
+  $statement->execute();
+  return $statement->fetchAll(PDO::FETCH_DEFAULT);
 }
 function is_user_have_friend($result) {
   if($result === null) {
@@ -139,6 +155,7 @@ function echo_blogs($result, $database, $add_content_button) {
         echo "<img src='images/blog_images/".$blog_data['blog_blog_filename_image'].".jpg' alt='' class='blog-img'> " ;
       }
     echo "</div> " ;
+    get_comment_like_buttons($blog_data["blog_id"]);
   }
 }
 function get_box_user_information_html($database) {
@@ -158,6 +175,7 @@ function add_content_button() {
       echo "</form>" ;
 }
 function get_blog_title_text($title, $text) {
+  echo "<div class='content'> ";
   echo "</div> " ;
   echo "<h2 id='blog-title'>$title/h2> " ;
   echo "<p id='blog-text'>$text</p> " ;
@@ -168,14 +186,11 @@ function is_there_blog_img($blog_pic) {
   }
   return true ;
 }
-function get_random_blogs($database) {
-  $sql = 
-    'SELECT blog_title, blog_text, blog_filename_image,
-    blog_time, categories FROM blog '. make_where_statement($database) 
-    .' AND NOT user_id = '. $_COOKIE['user-id']. ' ORDER BY blog_time' ;
-  $statement = $database->prepare($sql);
-  $statement->execute();
-  return $statement->fetchAll(PDO::FETCH_DEFAULT);
+function get_comment_like_buttons($blog_id) {
+  echo "<div class='buttons'>" ;
+    echo "<a href='php/comment.php?blog-id=$blog_id' title='comment'><i class='fa-regular fa-comment'></i></a>" ;
+    echo "<a href='php/like.php'><i class='fa-regular fa-thumbs-up'></i></a>" ;
+  echo "</div>" ;
 }
 function make_where_statement($database) {
   $ids = get_friends_id($database);

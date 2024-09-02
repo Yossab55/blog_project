@@ -116,7 +116,7 @@ aside {
   align-items: center;
   justify-content: space-between;
 }
-.main-content section .user-information .content {
+.main-content section .user-information .information {
   display: flex;
 }
 .main-content section .user-information .user-name {
