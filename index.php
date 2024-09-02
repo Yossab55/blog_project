@@ -1,5 +1,4 @@
 <?php
-//todo you need to make add content button in the blogs if the user doesn't have friend 
 include('php/functions.php');
 include('php/connect.php');
 $script_name = get_script_name();
@@ -60,7 +59,15 @@ setcookie('user-id',1 ,time() + strtotime('+1 year'), '/');
       </ul>
     </aside>
     <section>
-      <?php //blog_structure_html($database) ?>
+      <?php 
+        $result = get_friend_blogs($database);
+        if(is_user_have_friend($result)) {
+          echo_blogs($result, $database, false);
+        } else {
+          $random_blogs = get_random_blogs($database);
+          echo_blogs($random_blogs, $database, true);
+        }
+      ?>
       <div class='box'> 
     <div class='user-information'> 
       <div class="content">
@@ -68,7 +75,7 @@ setcookie('user-id',1 ,time() + strtotime('+1 year'), '/');
         <span class='user-name'>user name </span> 
       </div>
       <form action= 'index.php' method= 'get'>
-        <button type='submit' name='add-content' value='?'>
+        <button type='submit' name='add-content' value='add-friend'>
           <span class='button'>Add Contact </span>
           <i class='fa-solid fa-plus'></i>
         </button>
@@ -84,36 +91,6 @@ setcookie('user-id',1 ,time() + strtotime('+1 year'), '/');
 </html>
 
 <?php
-function is_user_have_friend_blogs($database) {
-  $result = get_blogs($database);
-  if($result === null) {
-    //todo there should be function to get random blogs from user 
-  } else {
-    //todo function to get all user blogs and sort by date !!
-  }
-}
-function blog_structure_html($database) {
-  echo "<div class='box'> " ;
-    echo "<div class='user-information'> " ;
-      echo "<div class='content'>" ;
-        echo "<img src='images/profile_images/".echo_user_profile_pic($database).".png' alt='' class ='circled-img'>" ;
-        echo "<span class='user-name'>user name </span> " ;
-      echo "</div>" ;
-      //todo if he is a friend from the first why i but a button 
-      echo "<form action= 'index.php' method= 'get'>" ;
-        echo "<button type='submit' name='add-content' value='?'>" ;
-          echo "<span class='button'>Add Contact </span>" ;
-          echo "<i class='fa-solid fa-plus'></i>" ;
-        echo "</button>" ;
-      echo "</form>" ;
-    echo "</div> " ;
-    echo "<h2 id='blog-title'>Hello world</h2> " ;
-    echo "<p id='blog-text'>I'm a new user in bloger, I'm trying to learn how to make a nodes</p> " ;
-    //todo it should be blog_images instead of profile images and there si no default 
-    // if there is no image so don't put an image 
-    echo "<img src='images/blog_images/test.jpg' alt='' class='blog-img'> " ;
-  echo "</div> " ;
-}
 function echo_user_profile_pic($database) {
   $profile_pic_name = get_user_profile_pic_from($database);
   if($profile_pic_name!= null) {
@@ -130,25 +107,90 @@ function get_user_profile_pic_from($database) {
   if($data == null) return null;
   return $data[0];
 }
-
-function is_there_a_blog_in($database) {
-  $data = get_blogs($database);
-  if($data == null) return false ;
-  return true ;
-}
-function get_blogs($database) {
-  // * done 
-  //this sql statment is wrong you will need to make selection with user friend then take user friend 
-  // then take user friend id which is user id  and get there blogs first then sort is by the date . 
-  //? i think this is the right we will find in the near future 
+function get_friend_blogs($database) {
     $sql = 
       'SELECT f.friend_id, b.blog_title, b.blog_text, b.blog_filename_image,
       b.blog_time, b.categories
       FROM  userfriend as f
+      INNER JOIN userfriend as u 
+      on  u.user_id = f.friend_id 
       INNER JOIN blog as b 
-      on b.blog_id = f.friend_id 
-      WHERE f.friend_id =' . $_COOKIE['user-id'];
+      on b.user_id = f.friend_id 
+      WHERE f.friend_id =' . $_COOKIE['user-id'] .' 
+      ORDER BY b.blog_time';
     $statement = $database->prepare($sql);
     $statement->execute();
     return $statement->fetchAll(PDO::FETCH_DEFAULT);
+}
+function is_user_have_friend($result) {
+  if($result === null) {
+    return false ;
+  } 
+  return true ;
+}
+function echo_blogs($result, $database, $add_content_button) {
+  foreach($result as $blog_data) {
+    get_box_user_information_html($database);
+    if($add_content_button) {
+      add_content_button();
+    }
+    get_blog_title_text($blog_data["blog_title"], $blog_data["blog_text"]) ;
+      if(is_there_blog_img($blog_data['blog_blog_filename_image'])) {
+        echo "<img src='images/blog_images/".$blog_data['blog_blog_filename_image'].".jpg' alt='' class='blog-img'> " ;
+      }
+    echo "</div> " ;
+  }
+}
+function get_box_user_information_html($database) {
+  echo "<div class='box'> " ;
+    echo "<div class='user-information'> " ;
+      echo "<div class='content'>" ;
+        echo "<img src='images/profile_images/".echo_user_profile_pic($database).".png' alt='' class ='circled-img'>" ;
+        echo "<span class='user-name'>user name </span> " ;
+      echo "</div>" ;
+}
+function add_content_button() {
+      echo "<form action= 'index.php' method= 'get'>" ;
+        echo "<button type='submit' name='add-content' value='add-friend'>" ;
+          echo "<span class='button'>Add Contact </span>" ;
+          echo "<i class='fa-solid fa-plus'></i>" ;
+        echo "</button>" ;
+      echo "</form>" ;
+}
+function get_blog_title_text($title, $text) {
+  echo "</div> " ;
+  echo "<h2 id='blog-title'>$title/h2> " ;
+  echo "<p id='blog-text'>$text</p> " ;
+}
+function is_there_blog_img($blog_pic) {
+  if($blog_pic == null) {
+    return false ; 
+  }
+  return true ;
+}
+function get_random_blogs($database) {
+  $sql = 
+    'SELECT blog_title, blog_text, blog_filename_image,
+    blog_time, categories FROM blog '. make_where_statement($database) 
+    .' AND NOT user_id = '. $_COOKIE['user-id']. ' ORDER BY blog_time' ;
+  $statement = $database->prepare($sql);
+  $statement->execute();
+  return $statement->fetchAll(PDO::FETCH_DEFAULT);
+}
+function make_where_statement($database) {
+  $ids = get_friends_id($database);
+  $statement = '';
+  foreach($ids as $id ) {
+    $statement .= "NOT user_id =". $id ." AND " ;
+  }
+  return $statement;
+}
+function get_friends_id($database) {
+  $sql = 
+    'SELECT friend_id 
+    FROM userfriend 
+    WHERE  user_id='. $_COOKIE['user-id'];
+  $statement = $database->prepare($sql);
+  $statement->execute();
+  return $statement->fetchAll(PDO::FETCH_COLUMN, 0);
 }
