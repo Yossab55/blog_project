@@ -88,8 +88,14 @@ setcookie('user-id',1 ,time() + strtotime('+1 year'), '/');
           <img src='images/blog_images/test.jpg' alt='' class='blog-img'> 
         </div>
         <div class='buttons'>
-          <a href='php/comment.php?blog-id=?' title='comment'><i class='fa-regular fa-comment'></i></a>
-          <a href='php/like.php'><i class='fa-regular fa-thumbs-up'></i></a>
+          <a href='php/comment.php?blog-id=1' title='comment'>
+            <i class='fa-regular fa-comment'></i>
+            <span>comment</span>
+        </a>
+          <a href='php/like.php'>
+            <i class='fa-regular fa-thumbs-up'></i>
+            <span>like</span>
+        </a>
         </div>
       </div> 
     </section>
@@ -187,10 +193,16 @@ function is_there_blog_img($blog_pic) {
   return true ;
 }
 function get_comment_like_buttons($blog_id) {
-  echo "<div class='buttons'>" ;
-    echo "<a href='php/comment.php?blog-id=$blog_id' title='comment'><i class='fa-regular fa-comment'></i></a>" ;
-    echo "<a href='php/like.php'><i class='fa-regular fa-thumbs-up'></i></a>" ;
-  echo "</div>" ;
+  echo "<div class='buttons'>";
+    echo "<a href='php/comment.php?blog-id=$blog_id' title='comment'>";
+      echo "<i class='fa-regular fa-comment'></i>";
+      echo "<span>comment</span>";
+    echo "</a>";
+      echo "<a href='php/like.php'>";
+        echo "<i class='fa-regular fa-thumbs-up'></i>";
+        echo "<span>like</span>";
+    echo "</a>";
+  echo "</div>";
 }
 function make_where_statement($database) {
   $ids = get_friends_id($database);
