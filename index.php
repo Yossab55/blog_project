@@ -4,7 +4,8 @@ include('php/connect.php');
 $script_name = get_script_name();
 $path = get_path_name_depend_on($script_name);
 setcookie('user-id',1 ,time() + strtotime('+1 year'), '/');
-//todo buttons comment and like add friend there is no request for them 
+//todo buttons like add friend there is no request for them 
+//* like and friend should be done by fetch 🥹
 ?>
 
 
@@ -59,46 +60,49 @@ setcookie('user-id',1 ,time() + strtotime('+1 year'), '/');
         </li>
       </ul>
     </aside>
-    <section>
-      <?php 
-        $result = get_friend_blogs($database);
-        if(is_user_have_friend($result)) {
-          echo_blogs($result, $database, false);
-        } else {
-          $random_blogs = get_random_blogs($database);
-          echo_blogs($random_blogs, $database, true);
-        }
-      ?>
-      <div class='box'> 
-        <div class='user-information'> 
-          <div class="information">
-            <img src='images/profile_images/default.png' alt='' class ='circled-img'> 
-            <span class='user-name'>user name </span> 
+    <div class="container">
+      <section>
+        <?php 
+          $result = get_friend_blogs($database);
+          if(is_user_have_friend($result)) {
+            echo_blogs($result, $database, false);
+          } else {
+            $random_blogs = get_random_blogs($database);
+            echo_blogs($random_blogs, $database, true);
+          }
+        ?>
+        <div class='box'> 
+          <div class='user-information'> 
+            <div class="information">
+              <img src='images/profile_images/default.png' alt='' class ='circled-img'> 
+              <span class='user-name'>user name </span> 
+            </div>
+            <form action= 'index.php' method= 'post'>
+              <button type='submit' name='add-content' value='add-friend'>
+                <span class='button'>Add Contact </span>
+                <i class='fa-solid fa-plus'></i>
+              </button>
+            </form>
+          </div> 
+          <div class='content'>
+            <h2 id='blog-title'>Hello world</h2> 
+            <p id='blog-text'>I'm a new user in bloger, I'm trying to learn how to make a nodes</p> 
+            <img src='images/blog_images/test.jpg' alt='' class='blog-img'> 
           </div>
-          <form action= 'index.php' method= 'get'>
-            <button type='submit' name='add-content' value='add-friend'>
-              <span class='button'>Add Contact </span>
-              <i class='fa-solid fa-plus'></i>
-            </button>
-          </form>
+          <div class='buttons'>
+            <a href='php/comment.php?blog-id=1' title='comment'>
+              <i class='fa-regular fa-comment'></i>
+              <span>comment</span>
+            </a>
+            <a href='php/like.php'>
+              <i class='fa-regular fa-thumbs-up'></i>
+              <span>like</span>
+            </a>
+          </div>
         </div> 
-        <div class='content'>
-          <h2 id='blog-title'>Hello world</h2> 
-          <p id='blog-text'>I'm a new user in bloger, I'm trying to learn how to make a nodes</p> 
-          <img src='images/blog_images/test.jpg' alt='' class='blog-img'> 
-        </div>
-        <div class='buttons'>
-          <a href='php/comment.php?blog-id=1' title='comment'>
-            <i class='fa-regular fa-comment'></i>
-            <span>comment</span>
-        </a>
-          <a href='php/like.php'>
-            <i class='fa-regular fa-thumbs-up'></i>
-            <span>like</span>
-        </a>
-        </div>
-      </div> 
-    </section>
+      </section>
+
+    </div>
   </div>
 </body>
 </html>
@@ -152,7 +156,8 @@ function is_user_have_friend($result) {
 }
 function echo_blogs($result, $database, $add_content_button) {
   foreach($result as $blog_data) {
-    get_box_user_information_html($database);
+    $user_name = get_user_name_by($blog_data['user-id']);
+    get_box_user_information_html($database, $user_name);
     if($add_content_button) {
       add_content_button();
     }
@@ -164,12 +169,22 @@ function echo_blogs($result, $database, $add_content_button) {
     get_comment_like_buttons($blog_data["blog_id"]);
   }
 }
-function get_box_user_information_html($database) {
+function get_user_name_by($id) {
+  $sql = 
+    'SELECT user_name FROM user 
+    WHERE id = '.$id;
+  $statement = $database->prepare($sql);
+  $statement->execute();
+  $data = $statement->fetchAll(PDO::FETCH_COLUMN,0);
+  if($data == null) return null;
+  return $data[0];
+}
+function get_box_user_information_html($database, $user_name) {
   echo "<div class='box'> " ;
     echo "<div class='user-information'> " ;
       echo "<div class='content'>" ;
         echo "<img src='images/profile_images/".echo_user_profile_pic($database).".png' alt='' class ='circled-img'>" ;
-        echo "<span class='user-name'>user name </span> " ;
+        echo "<span class='user-name'> $user_name </span> " ;
       echo "</div>" ;
 }
 function add_content_button() {

@@ -55,6 +55,7 @@ CREATE TABLE `replay` (
   `replay_id` int(11) NOT NULL,
   `user_id` int(11) NOT NULL,
   `comment_id` int(11) NOT NULL,
+  `replay_time` datetime DEFAULT NULL,
   `replay_text` text DEFAULT NULL,
   PRIMARY KEY (`replay_id`),
   KEY `user_id_replay_fk` (`user_id`),
@@ -78,5 +79,6 @@ CREATE TABLE `reaction` (
 
 CREATE TABLE `increment` (
   `id_increment` int(11) DEFAULT NULL,
-  `comment_increment` int(11) DEFAULT NULL
+  `comment_increment` int(11) DEFAULT NULL,
+  `replay_increment` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci

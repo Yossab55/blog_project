@@ -5,7 +5,7 @@ $script_name = get_script_name();
 $path = get_path_name_depend_on($script_name);
 $is_error = false;
 if(is_request_method_post()) {
-  if(is_request_from_add_comment())  {
+  if(is_request_from_add_comment()) {
     if(!  is_new_comment_null()) {
       add_comment_to($database);
       header("Location: comment.php?blog-id=".$_GET['blog-id']);
@@ -13,7 +13,16 @@ if(is_request_method_post()) {
       $is_error = true;
     }
   }
+  if(is_request_from_add_replay()) {
+    if(!  is_new_replay_null()) {
+      add_replay_to($database);
+      header("Location: comment.php?blog-id=".$_GET['blog-id']."&comment-id=".$_GET['comment-id']);
+    } else {  
+      $is_error = true;
+    }
+  }
 }
+
 ?>
 
 <!DOCTYPE html>
@@ -31,13 +40,27 @@ if(is_request_method_post()) {
       </div>
       <div class='comment-section'>
           <?php
-            $comment_content = get_comments_from($database);
-            if(count($comment_content) !== 0) {
+            if(is_comment()) {
+              $comments_content = get_comments_from($database);
+              if(count($comments_content) !== 0) {
+                echo_comments($comments_content);
+              } else {
+                echo "<div class='comment no-comment'>";
+                  echo "<p>There is no comment!!, be the first one</p>";
+                echo "</div>";
+              }
+            }
+            if(is_replay()) {
+              $comment_content = get_comment_from($database);
               echo_comments($comment_content);
-            } else {
+              $replays_content = get_replays($database);
+              if(count($replays_content) !== 0) {
+                echo_replays($database, $replays_content);
+              } else {
               echo "<div class='comment no-comment'>";
-                echo "<p>There is no comment!!, be the first one</p>";
+                echo "<p>There is no replays!!, be the first one who reply</p>";
               echo "</div>";
+              }
             }
           ?>
       </div>
@@ -48,8 +71,8 @@ if(is_request_method_post()) {
             if($is_error) 
               echo "<span class = 'error'>". error_message_comment() ."</span>" ;
           ?>
-          <input type='text' name='comment-text' >
-          <button type='submit' name='comment' value='add-comment'>
+          <input type='text' name='<?php echo determine_comment_or_replay_text() ?>' >
+          <button type='submit' name='comment' value='<?php echo determine_add_comment_or_replay() ?>'>
             <i class='fa-solid fa-paper-plane'></i>
           </button>
         </form>
@@ -106,7 +129,9 @@ function echo_user_name($database) {
   return $user_name;
 }
 function get_user_name_from($database) {
-  $sql = 'SELECT user_name FROM user WHERE user_id='. $_COOKIE['user-id'];
+  $sql = 'SELECT u.user_name FROM user AS u
+  WHERE u.user_id = (SELECT b.blog_id FROM blog as b 
+  WHERE b.blog_id ='. $_GET['blog-id'] . ')';
   $statement = $database->prepare($sql);
   $statement->execute();
   $data = $statement->fetchAll(PDO::FETCH_COLUMN,0);
@@ -139,7 +164,8 @@ function echo_comments($comments) {
     echo "<div class='comment'>" ;
       echo "<img src='../images/profile_images/'".echo_comment_user_profile_pic($comment['user_filename_profile']).".png' alt=''>";
         echo "<p class='comment-text'>".$comment['comment_text']."</p>";
-        echo "<a href='replay.php?comment-id='".$comment['comment_id']."' title='replay'><i class='fa-regular fa-comment-dots'></i></a>";
+        echo "<a href='comment.php?blog-id=".$_GET['blog-id']."&comment-id=".$comment['comment-id']."'
+        title='replay'><i class='fa-regular fa-comment-dots'></i></a>";
     echo "</div>" ;
   }
 }
@@ -168,6 +194,18 @@ function is_new_comment_null() {
   }
   return false;
 }
+function is_request_from_add_replay() {
+  if(isset($_POST['add-replay']) && ! (is_null($_POST['add-replay']))) {
+    return true;
+  }
+  return false;
+}
+function is_new_replay_null() {
+  if(is_null($_POST['replay-text'])) {
+    return true;
+  }
+  return false;
+}
 function add_comment_to($database) {
   $data = [
     'comment_id' => get_id_for_new_comment_from($database),
@@ -187,18 +225,18 @@ function get_id_for_new_comment_from($database) {
   $statement->execute();
   $result = $statement->fetchAll();
   if($result === null) {
-    insert_one_into_increment($database);
+    insert_one_comment_into_increment($database);
     return 1;
   } else {
-    $result[1][0] ++ ;
-    update_id_from_column_increment($database, $result[1][0]);
-    return $result[1][0];
+    $result[0][1] ++ ;
+    update_comment_from_column_increment($database, $result[0][1]);
+    return $result[0][1];
   }
 }
-function insert_one_into_increment($database) {
-  $sql = 'INSERT INTO increment VALUES (?, ?)';
+function insert_one_comment_into_increment($database) {
+  $sql = 'INSERT INTO increment VALUES (?, ?, ?)';
   $statement = $database->prepare($sql);
-  $statement->execute([1,null]);
+  $statement->execute([null,1,null]);
 }
 function update_id_from_column_increment($database, $number_after_increment) {
   $sql = 'UPDATE increment SET id_increment = ?';
@@ -206,4 +244,96 @@ function update_id_from_column_increment($database, $number_after_increment) {
 }
 function error_message_comment() {
   return "comment can't be empty";
+}
+function is_comment() {
+  $query = explode('&',$_SERVER['QUERY_STRING']);
+  $size = count($query);
+  if($size === 1) {
+    return true;
+  }
+  return false;
+}
+function is_replay() {
+  $query = explode('&',$_SERVER['QUERY_STRING']);
+  $size = count($query);
+  if($size > 1) {
+    return true;
+  }
+  return false;
+}
+function get_comment_from($database) {
+  $sql = 
+    'SELECT u.user_filename_profile, c.comment_id, c.blog_id, c.user_id, c.comment_text 
+    FROM comment as c
+    INNER JOIN user as u 
+    ON u.user_id = c.user_id
+    WHERE c.blog_id = '. $_GET['blog-id'] .' AND c.comment_id = '. $_GET['comment-id'];
+  $statement = $database->prepare($sql);
+  $statement->execute();
+  return $statement->fetchAll(PDO::FETCH_DEFAULT);
+}
+function get_replays() {
+  $sql = 
+    'SELECT u.user_filename_profile, r.replay_text, r.replay_time 
+    FROM replay as y
+    INNER JOIN user as u
+    ON u.user_id = r.user_id
+    WHERE user_id ='.$_COOKIE['user-id'] .' ORDER BY r.replay_time';
+  $statement = $database->prepare($sql);
+  $statement->execute();
+  return $statement->fetchAll(PDO::FETCH_DEFAULT);
+}
+function echo_replays($database, $replays_content) {
+  foreach($replays_content as $replay) {
+    echo "<div class='replay comment'>";
+      echo "<img src='../images/profile_images/".echo_comment_user_profile_pic($comment['user_filename_profile']).".png' alt='' class='circled-img'>";
+      echo "<p>".$replay['replay_text']."</p>";
+    echo "</div>";
+  }
+}
+function determine_add_comment_or_replay() {
+  if(is_comment()) {
+    return "add-comment";
+  } else return "add-replay";
+}
+function determine_comment_or_replay_text() {
+  if(is_comment()) {
+    return "comment-text";
+  } else return "replay-text";
+}
+function add_replay_to($database) {
+  $data = [
+    'replay_id' => get_id_for_new_replay_from($database),
+    'user_id' => $_COOKIE['user-id'],
+    'comment_id' => $_GET['comment-id'],
+    'replay_time' => "CURRENT_TIMESTAMP",
+    'replay_text' => $_POST['replay-text']
+  ];
+  $sql= 
+    'INSERT INTO comment VALUES(:replay_id, :user_id, :comment_id, :replay_time, :replay_text)' ;
+  $statement = $database->prepare($sql);
+  $statement->execute($data);
+}
+function get_id_for_new_comment_from($database) {
+  $sql = 'SELECT comment_increment FROM increment' ;
+  $statement = $database->prepare($sql);
+  $statement->execute();
+  $result = $statement->fetchAll();
+  if($result === null) {
+    insert_one_replay_into_increment($database);
+    return 1;
+  } else {
+    $result[0][2] ++ ;
+    update_replay_from_column_increment($database, $result[0][2]);
+    return $result[0][2];
+  }
+}
+function insert_one_replay_into_increment($database) {
+  $sql = 'INSERT INTO increment VALUES (?, ?, ?)';
+  $statement = $database->prepare($sql);
+  $statement->execute([null, null, 1]);
+}
+function update_replay_from_column_increment($database, $number_after_increment) {
+  $sql = 'UPDATE increment SET replay_increment = ?';
+  $statement = $database->prepare($sql)->execute([$number_after_increment]);
 }

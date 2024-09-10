@@ -94,8 +94,9 @@
   align-items: center;
   width: fit-content;
   gap: 10px;
-  margin: 0 auto 15px;
+  margin: 0 0 15px 50px;
 }
+
 .main-content .comment p {
   margin: 0;
   font-size: 1.4em;
@@ -115,6 +116,12 @@
 }
 .main-content .comment a:hover {
   color: var(--dark-color);
+}
+.main-content .replay {
+  padding-left: 25px;
+}
+.main-content .replay p {
+  font-size: 1.2em;
 }
 .main-content .write-comment {
   position: absolute;
