@@ -1,0 +1,122 @@
+.main-content {
+  display: flex;
+}
+.main-content .hello {
+  text-align: center;
+}
+.main-content aside .page-links {
+  height: 100vh;
+}
+.main-content .hello h2 {
+  margin: 0;
+  padding: var(--padding-20);
+  font-size: 1.8em;
+  font-weight: bold;
+  color: var(--light-color);
+}
+.main-content form {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+
+  background-color: var(--dark-color);
+  color: var(--white-color);
+  padding: var(--padding-20);
+  border-radius: 20px;
+}
+.main-content form .texts {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  min-width: 200px;
+  width: 100%;
+  flex: 1;
+}
+.main-content form .texts label {
+  align-self: start;
+  padding-left: 10px;
+  margin-bottom: 5px;
+}
+.main-content form .texts input,
+.main-content form .texts textarea {
+  width: 100%;
+  border-radius: 20px;
+  height: 40px;
+  font-size: 1.3em;
+  padding-left: 10px;
+}
+.main-content form .texts textarea {
+  resize: none;
+  padding: 10px;
+  height: 200px;
+}
+.main-content form .error {
+  padding: 10px;
+  margin-top: 10px;
+  background-color: var(--white-color);
+  border-radius: 16px;
+  color: var(--error-color);
+}
+.main-content form .texts input:focus,
+.main-content form .texts textarea:focus {
+  outline: none;
+}
+.main-content form label[for="file"] {
+  margin-top: 10px;
+  margin-bottom: 10px;
+  min-width: 200px;
+  width: 100%;
+  height: 100px;
+  border: 1px dashed var(--white-color);
+  border-radius: 20px;
+  position: relative;
+  cursor: pointer;
+}
+.main-content form input[type="file"] {
+  display: none;
+}
+.main-content form label[for="file"] span {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+.main-content form .checkboxes {
+  margin-top: 10px;
+  margin-bottom: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.main-content form .checkboxes label:not(:last-child) {
+  margin-right: 10px;
+}
+.main-content form .checkboxes label span{
+  margin-right: 5px;
+}
+.main-content form button[type="submit"] {
+  cursor: pointer;
+  border: none;
+  background-color: transparent;
+  color: white;
+  font-size: 2em;
+  margin-top: 15px;
+  transition: var(--main-transition);
+}
+.main-content form button[type="submit"]:hover {
+  color: var(--light-color);
+}
+@media (max-width: 767px) {
+  .main-content form .checkboxes {
+    flex-direction: column;
+  }
+  .main-content form .checkboxes label {
+    margin-right: 0;
+  }
+  .main-content form .checkboxes label:not(:last-child) {
+    margin-bottom: 5px;
+  }
+}

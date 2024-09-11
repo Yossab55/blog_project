@@ -6,8 +6,13 @@ function get_script_name() {
     'main' : $result;
 }
 
-function get_path_name_depend_on($script_name) {
+function get_css_path_name_depend_on($script_name) {
   if($script_name == 'main') 
-    return $path = 'css/' ;
-  else return $path = '../css/'; 
+    return 'css/' ;
+  else return  '../css/'; 
+}
+function get_aside_path_depend_on($script_name) {
+  if($script_name == 'main')
+    return 'php/';
+  else return '';
 }

@@ -1,7 +1,7 @@
 <?php
 include('../php/functions.php');
 $script_name = get_script_name();
-$path = get_path_name_depend_on($script_name);
+$css_path = get_path_name_depend_on($script_name);
 
 $is_error = false ;
 $message_is_error = "";

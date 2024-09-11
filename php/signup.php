@@ -1,7 +1,7 @@
 <?php
 include('../php/functions.php');
 $script_name = get_script_name();
-$path = get_path_name_depend_on($script_name);
+$css_path = get_path_name_depend_on($script_name);
 
 $error_exist = false ;
 $keys_data_from_post = array_keys($_POST);
@@ -20,8 +20,9 @@ if(check_request_submit()) {
 
   if(! $error_exist) {
     include('connect.php');
+    insert_data_in_user_table($database) ;
     set_id_in_cookie($database);
-    insert_data_and_go_to_home($database);
+    header('location: ../index.php');
   }
   
 }
@@ -105,49 +106,29 @@ function check_request_submit() {
   }
   return false;
 }
-
-function set_id_in_cookie($database) {
-  setcookie('user-id', get_id_for_new_user($database),time() + strtotime('+1 year'), '/');
-}
-function get_id_for_new_user($database) {
-  $sql = 'SELECT id_increment FROM increment' ;
-  $statement = $database->prepare($sql);
-  $statement->execute();
-  $result = $statement->fetchAll();
-  if($result === null) {
-    insert_one_into_increment($database);
-    return 1;
-  } else {
-    $result[0][0] ++ ;
-    update_id_from_column_increment($database, $result[0][0]);
-    return $result[0][0];
-  }
-}
-function insert_one_into_increment($database) {
-  $sql = 'INSERT INTO increment VALUES (?, ?)';
-  $statement = $database->prepare($sql);
-  $statement->execute([1,null]);
-}
-function update_id_from_column_increment($database, $number_after_increment) {
-  $sql = 'UPDATE increment SET id_increment = ?';
-  $statement = $database->prepare($sql)->execute([$number_after_increment]);
-}
-function insert_data_and_go_to_home($database) {
-  insert_data_in_user_table($database) ;
-  header('location: ../index.php');
-}
-function insert_data_in_user_table($database) {
+function insert_data_in($database) {
   $data = [
-    'id' => $_COOKIE['user-id'],
     'full_name' => $_POST['first-name'] . " " . $_POST['last-name'],
     'pass' => $_POST['password'],
     'email' => $_POST['email'],
     'date_of_birth' => get_date()
   ];
-  $sql = 'INSERT INTO user (user_id, user_name, user_password, user_email, user_date_of_birth)
-  VALUES (:id, :full_name, :pass, :email, :date_of_birth)';
+  $sql = 'INSERT INTO user (user_name, user_password, user_email, user_date_of_birth)
+  VALUES (:full_name, :pass, :email, :date_of_birth)';
   $statement = $database->prepare($sql);
   $statement->execute($data);
+}
+function set_id_in_cookie($database) {
+  setcookie('user-id', get_id_for_new_user($database),time() + strtotime('+1 year'), '/');
+}
+get_id_for_new_user($database) {
+  $sql = 
+    'SELECT user_id FROM user';
+  $statement = $database->prepare($sql);
+  $statement->execute();
+  $data = $statement->fetchAll(PDO::FETCH_COLUMN, 0);
+  $count = count($data);
+  return $data[$count - 1];
 }
 function get_date() {
   $part = explode('/',$_POST['date-of-birth']);

@@ -2,7 +2,8 @@
 include('php/functions.php');
 include('php/connect.php');
 $script_name = get_script_name();
-$path = get_path_name_depend_on($script_name);
+$css_path = get_css_path_name_depend_on($script_name);
+$aside_path = get_aside_path_depend_on($script_name);
 setcookie('user-id',1 ,time() + strtotime('+1 year'), '/');
 //todo buttons like add friend there is no request for them 
 //* like and friend should be done by fetch 🥹
@@ -13,53 +14,32 @@ setcookie('user-id',1 ,time() + strtotime('+1 year'), '/');
 <html lang="en">
 <?php include('php/head.php'); ?>
 <body>
+  
   <nav>
-    <div class="section-1">
-      <img src="images/site_images/logo.png" alt="Bloger" class="circled-img">
-      <form action="" method="post">
-        <label >
-          <input type="text" name="categories" >
-          <button type="submit">
-            <i class="fa-solid fa-magnifying-glass"></i>
-          </button>
-        </label>
-      </form>
-    </div>
-    <div class="section-3">
-      <a href="php/home.php">
-        <img 
-          src="images/profile_images/<?php echo echo_user_profile_pic($database)?>.png" 
-          alt="your photo" 
-          class="circled-img"
-          title= 'Home Page'>
-      </a>
-    </div>
-  </nav>
+  <div class="section-1">
+    <img src="images/site_images/logo.png" alt="Bloger" class="circled-img">
+    <form action="" method="post">
+      <label >
+        <input type="text" name="categories" >
+        <button type="submit">
+          <i class="fa-solid fa-magnifying-glass"></i>
+        </button>
+      </label>
+    </form>
+  </div>
+  <div class="section-3">
+    <a href="php/home.php">
+      <img 
+        src="images/profile_images/<?php echo echo_user_profile_pic($database)?>.png" 
+        alt="your photo" 
+        class="circled-img"
+        title= 'Home Page'>
+    </a>
+  </div>
+</nav>
   <div class="main-content">
-    <aside>
-      <ul class='page-links'>
-        <!-- //todo there should be an id for the home page and blog page
-          -->
-        <li>
-          <a href="php/home.php">
-            <i class="fa-solid fa-house"></i>
-            <span>home page</span>
-          </a>
-        </li>
-        <li>
-          <a href="php/blog.php">
-            <i class="fa-solid fa-b fa-lg"></i>
-            <span>Your blogs</span>
-          </a>
-        </li>
-        <li>
-          <a href="php/settings.php">
-            <i class="fa-solid fa-gear"></i>
-            <span>settings</span>
-          </a>
-        </li>
-      </ul>
-    </aside>
+    <?php include('php/aside.php')?>
+    
     <div class="container">
       <section>
         <?php 

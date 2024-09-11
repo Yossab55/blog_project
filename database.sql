@@ -76,9 +76,3 @@ CREATE TABLE `reaction` (
   CONSTRAINT `blog_id_reaction_fk` FOREIGN KEY (`blog_id`) REFERENCES `blog` (`blog_id`)  ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `user_id_reaction_fk` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci
-
-CREATE TABLE `increment` (
-  `id_increment` int(11) DEFAULT NULL,
-  `comment_increment` int(11) DEFAULT NULL,
-  `replay_increment` int(11) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci

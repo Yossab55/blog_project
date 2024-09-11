@@ -2,7 +2,7 @@
 include('functions.php');
 include('connect.php');
 $script_name = get_script_name();
-$path = get_path_name_depend_on($script_name);
+$css_path = get_path_name_depend_on($script_name);
 $is_error = false;
 if(is_request_method_post()) {
   if(is_request_from_add_comment()) {
@@ -208,39 +208,15 @@ function is_new_replay_null() {
 }
 function add_comment_to($database) {
   $data = [
-    'comment_id' => get_id_for_new_comment_from($database),
     'blog_id' => $_GET['blog-id'],
     'user_id' => $_COOKIE['user-id'],
     'comment_time' => "CURRENT_TIMESTAMP",
     'comment_text' => $_POST['comment-text']
   ];
   $sql= 
-    'INSERT INTO comment VALUES(:comment_id, :blog_id, :user_id, :comment_time, :comment_text)' ;
+    'INSERT INTO comment VALUES(:blog_id, :user_id, :comment_time, :comment_text)' ;
   $statement = $database->prepare($sql);
   $statement->execute($data);
-}
-function get_id_for_new_comment_from($database) {
-  $sql = 'SELECT comment_increment FROM increment' ;
-  $statement = $database->prepare($sql);
-  $statement->execute();
-  $result = $statement->fetchAll();
-  if($result === null) {
-    insert_one_comment_into_increment($database);
-    return 1;
-  } else {
-    $result[0][1] ++ ;
-    update_comment_from_column_increment($database, $result[0][1]);
-    return $result[0][1];
-  }
-}
-function insert_one_comment_into_increment($database) {
-  $sql = 'INSERT INTO increment VALUES (?, ?, ?)';
-  $statement = $database->prepare($sql);
-  $statement->execute([null,1,null]);
-}
-function update_id_from_column_increment($database, $number_after_increment) {
-  $sql = 'UPDATE increment SET id_increment = ?';
-  $statement = $database->prepare($sql)->execute([$number_after_increment]);
 }
 function error_message_comment() {
   return "comment can't be empty";
@@ -303,37 +279,13 @@ function determine_comment_or_replay_text() {
 }
 function add_replay_to($database) {
   $data = [
-    'replay_id' => get_id_for_new_replay_from($database),
     'user_id' => $_COOKIE['user-id'],
     'comment_id' => $_GET['comment-id'],
     'replay_time' => "CURRENT_TIMESTAMP",
     'replay_text' => $_POST['replay-text']
   ];
   $sql= 
-    'INSERT INTO comment VALUES(:replay_id, :user_id, :comment_id, :replay_time, :replay_text)' ;
+    'INSERT INTO comment VALUES(:user_id, :comment_id, :replay_time, :replay_text)' ;
   $statement = $database->prepare($sql);
   $statement->execute($data);
-}
-function get_id_for_new_comment_from($database) {
-  $sql = 'SELECT comment_increment FROM increment' ;
-  $statement = $database->prepare($sql);
-  $statement->execute();
-  $result = $statement->fetchAll();
-  if($result === null) {
-    insert_one_replay_into_increment($database);
-    return 1;
-  } else {
-    $result[0][2] ++ ;
-    update_replay_from_column_increment($database, $result[0][2]);
-    return $result[0][2];
-  }
-}
-function insert_one_replay_into_increment($database) {
-  $sql = 'INSERT INTO increment VALUES (?, ?, ?)';
-  $statement = $database->prepare($sql);
-  $statement->execute([null, null, 1]);
-}
-function update_replay_from_column_increment($database, $number_after_increment) {
-  $sql = 'UPDATE increment SET replay_increment = ?';
-  $statement = $database->prepare($sql)->execute([$number_after_increment]);
 }
