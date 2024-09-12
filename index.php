@@ -4,6 +4,8 @@ include('php/connect.php');
 $script_name = get_script_name();
 $css_path = get_css_path_name_depend_on($script_name);
 $aside_path = get_aside_path_depend_on($script_name);
+$image_path = get_image_path_depend_on($script_name);
+
 setcookie('user-id',1 ,time() + strtotime('+1 year'), '/');
 //todo buttons like add friend there is no request for them 
 //* like and friend should be done by fetch 🥹
@@ -15,28 +17,7 @@ setcookie('user-id',1 ,time() + strtotime('+1 year'), '/');
 <?php include('php/head.php'); ?>
 <body>
   
-  <nav>
-  <div class="section-1">
-    <img src="images/site_images/logo.png" alt="Bloger" class="circled-img">
-    <form action="" method="post">
-      <label >
-        <input type="text" name="categories" >
-        <button type="submit">
-          <i class="fa-solid fa-magnifying-glass"></i>
-        </button>
-      </label>
-    </form>
-  </div>
-  <div class="section-3">
-    <a href="php/home.php">
-      <img 
-        src="images/profile_images/<?php echo echo_user_profile_pic($database)?>.png" 
-        alt="your photo" 
-        class="circled-img"
-        title= 'Home Page'>
-    </a>
-  </div>
-</nav>
+  <?php include('php/nav.php')?>
   <div class="main-content">
     <?php include('php/aside.php')?>
     
@@ -51,35 +32,6 @@ setcookie('user-id',1 ,time() + strtotime('+1 year'), '/');
             echo_blogs($random_blogs, $database, true);
           }
         ?>
-        <div class='box'> 
-          <div class='user-information'> 
-            <div class="information">
-              <img src='images/profile_images/default.png' alt='' class ='circled-img'> 
-              <span class='user-name'>user name </span> 
-            </div>
-            <form action= 'index.php' method= 'post'>
-              <button type='submit' name='add-content' value='add-friend'>
-                <span class='button'>Add Contact </span>
-                <i class='fa-solid fa-plus'></i>
-              </button>
-            </form>
-          </div> 
-          <div class='content'>
-            <h2 id='blog-title'>Hello world</h2> 
-            <p id='blog-text'>I'm a new user in bloger, I'm trying to learn how to make a nodes</p> 
-            <img src='images/blog_images/test.jpg' alt='' class='blog-img'> 
-          </div>
-          <div class='buttons'>
-            <a href='php/comment.php?blog-id=1' title='comment'>
-              <i class='fa-regular fa-comment'></i>
-              <span>comment</span>
-            </a>
-            <a href='php/like.php'>
-              <i class='fa-regular fa-thumbs-up'></i>
-              <span>like</span>
-            </a>
-          </div>
-        </div> 
       </section>
 
     </div>

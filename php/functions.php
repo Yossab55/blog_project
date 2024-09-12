@@ -16,3 +16,8 @@ function get_aside_path_depend_on($script_name) {
     return 'php/';
   else return '';
 }
+function get_image_path_depend_on($script_name) {
+  if($script_name == 'main')
+    return 'images/';
+  else return '../images/';
+}

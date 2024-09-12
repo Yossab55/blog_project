@@ -1,7 +1,5 @@
 <aside>
   <ul class='page-links'>
-    <!-- //todo there should be an id for the home page and blog page
-      -->
     <li>
       <a href="<?php echo $aside_path ?>add_blog.php">
         <i class="fa-solid fa-square-plus"></i>
