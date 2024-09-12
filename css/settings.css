@@ -1,0 +1,71 @@
+.main-content {
+  display: flex;
+}
+.main-content .container {
+  padding: 20px;
+  background-color: var(--light-color);
+  border-radius: 10px;
+  margin: 10px;
+}
+.main-content .container .grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 10px;
+  background-color: var(--light-color);
+  border-radius: 10px;
+  margin: 10px;
+}
+.main-content .container .box {
+  display: flex;
+  flex-direction: column;
+  background-color: var(--white-color);
+  border-radius: 10px;
+  padding: 10px;
+}
+.main-content .container .box form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.main-content .container .box form input[type="file"] {
+  display: none;
+}
+.main-content .container .box form label[for="file"] {
+  width: calc(100% - 40px);
+  height: 150px;
+  border: 1px dashed var(--light-color);
+  border-radius: 10px;
+  cursor: pointer;
+  position: relative;
+}
+.main-content .container .box form label[for="file"] span {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+.main-content .container .box form input[type="text"] {
+  width: calc(100% - 40px);
+  border-radius: 20px;
+  padding: 10px;
+  padding-left: 20px;
+  border: 1px solid var(--dark-color);
+}
+.main-content .container .box form input[type="text"]:focus {
+  outline: none;
+}
+.main-content .container .box:nth-child(2) form label {
+  margin-bottom: 5px;
+}
+.main-content .container .box:nth-child(2) form label:last-of-type {
+  margin-top:10px
+}
+.main-content .container .box form button {
+  border: none;
+  padding: 10px 15px;
+  background-color: var(--dark-color);
+  border-radius: 10px;
+  color: var(--white-color);
+  margin-top: 10px;
+  cursor: pointer;
+}
