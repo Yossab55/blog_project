@@ -26,12 +26,15 @@ export { buttonEyeSwitch };
 // button prevent submit
 let buttonSignup = document.getElementById("signup");
 let inputsFiled = document.getElementsByTagName("input");
-buttonSignup.addEventListener("click", function stopData(e) {
-  for (let i = 0; i < inputsFiled.length; i++) {
-    if (inputsFiled[i].value == null) {
-      e.preventDefault();
+if(! (buttonSignup === null)) {
+
+  buttonSignup.addEventListener("click", function stopData(e) {
+    for (let i = 0; i < inputsFiled.length; i++) {
+      if (inputsFiled[i].value == null) {
+        e.preventDefault();
+      }
     }
-  }
-});
+  });
+}
 
 export { buttonSignup };

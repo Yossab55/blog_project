@@ -1,46 +1,63 @@
 <?php
-include('../php/functions.php');
+include('functions.php');
+include("connect.php");
 $script_name = get_script_name();
-$css_path = get_path_name_depend_on($script_name);
+$css_path = get_css_path_name_depend_on($script_name);
+// $script_name = (is_log_out()) ? 'logout' : get_script_name();
 
 $is_error = false ;
+$log_out_email_error = false;
+$log_out_password_error = false;
 $message_is_error = "";
 $index_and_boolean_email = [];
 $index_and_boolean_password = [];
+$logout_true_or_false = is_log_out();
 if( !(isset($_POST['eye'])) || is_null($_POST['eye']) ) {
   $password_or_text = 'password';
 }
-
-if(check_request_post_login()) {
-  include("php/connect.php");
-  $emails = get_emails_user($database);
-  $passwords = get_passwords_user($database);
-  if($emails == null) {
-    is_error_true($is_error);
-    $message_is_error = error_message_no_account() ;
-  } else {
-      for($i = 0 ; $i < count($emails); $i++) {
-        if(is_user_email_correct($emails[$i])) {
-          $index_and_boolean_email[0] = $i;
-          $index_and_boolean_email[1] = true;
-          break ;
+if(check_request_post()) {
+  if(is_it_login()) {
+    $emails = get_emails_user($database);
+    $passwords = get_passwords_user($database);
+    if($emails == null) {
+      is_error_true($is_error);
+      $message_is_error = error_message_no_account() ;
+    } else {
+        for($i = 0 ; $i < count($emails); $i++) {
+          if(is_user_email_correct($emails[$i])) {
+            $index_and_boolean_email[0] = $i;
+            $index_and_boolean_email[1] = true;
+            break ;
+          }
         }
-      }
-      $index_and_boolean_email[1] = false;
-      if($index_and_boolean_email[1]) {
-        if($passwords[$index_and_boolean_email[0]] === $_POST['password']) {
-          $id = get_user_id($database,$index_and_boolean_email[0]);
-          header('Location: ../index.php?id='.$id);
+        if($index_and_boolean_email[1]) {
+          if($passwords[$index_and_boolean_email[0]] === $_POST['password']) {
+            $id = get_user_id($database,$index_and_boolean_email[0]);
+            header('Location: ../index.php');
+          } else {
+            is_error_true($is_error);
+            $message_is_error = error_message_no_account_or_email_wrong() ;
+          }
         } else {
           is_error_true($is_error);
           $message_is_error = error_message_no_account_or_email_wrong() ;
         }
-      } else {
-        is_error_true($is_error);
-        $message_is_error = error_message_no_account_or_email_wrong() ;
       }
+  }
+  if(is_log_out()) {
+    if(is_user_email_error($database)) {
+      $log_out_email_error = true; 
+      is_error_true($is_error);
+      $message_is_error = error_message_email_wrong();
+    } else if(is_user_password_error($database)) {
+      $log_out_password_error = true;
+      is_error_true($is_error);
+      $message_is_error = error_message_password_wrong();
+    } else {
+      //المفروض هنا انا بخرجه من الموقع مش اكتر لان ده تخريج مش مسح بيانات 
     }
   }
+}
 
 
 ?>
@@ -54,8 +71,15 @@ if(check_request_post_login()) {
       <div class="container">
         <div class="over-lay"></div>
         <div class="error">
-          <h2> <?php echo $message_is_error ; ?> </h2>
-          <span><a href="">sign-up and get an account</a></span>
+          <h2> <?php echo $message_is_error  ?> </h2>
+          <span><a href="<?php ($logout_true_or_false) ? 'login.php?act="out"':'signup.php' ?>">
+            <?php
+            
+              if($logout_true_or_false)
+                echo 'try again';
+              else echo 'sign-up and get an account';
+              ?>
+          </a></span>
         </div>
       </div>
     <?php } ?>
@@ -64,14 +88,26 @@ if(check_request_post_login()) {
     <!-- start welcome section -->
     <div class="container welcome">
       <h2 class="welcome">Bloger</h2>
-      <span class="quote">where you write anything</span>
+      <span class="quote">
+        <?php
+          if($logout_true_or_false) 
+            echo_bye_message();
+          else echo_hello_message();
+        ?>
+      </span>
     </div>
     <!-- end welcome section -->
     
     <!-- start form section -->
     <div class="container ">
       <div class="get-information">
-        <h2>login</h2>
+        <h2>
+          <?php 
+            if($logout_true_or_false) 
+              echo "logout";
+            else echo 'login';
+          ?>
+        </h2>
         <form action="" method="post">
           <label for="email">enter your email</label>
           <input 
@@ -90,10 +126,20 @@ if(check_request_post_login()) {
               <i class='fa-solid fa-eye-slash'></i> 
             </button>
           </div>
-          <input type="submit" name="login" value="submit">
+          <input 
+          type="submit" 
+          name= "submit"
+          value="<?php echo ($logout_true_or_false) ? 'logout': 'login' ?>" >
         </form>
         <div class="questions">
-          <span class="sign-up"><a href="signup.php">you don't have an account (sign_in) ?</a></span>
+          <span class="sign-up"><a href="<?php echo ($logout_true_or_false) ? '../index.php': 'signup.php'?>">
+            <?php 
+              if($logout_true_or_false) 
+                echo "Go back to home page";
+              else echo "you don't have an account (sign_in) ?";
+            ?>
+            
+          </a></span>
           <span class="forget-password"><a href=""> did you forget your password?</a></span>
         </div>
       </div>
@@ -111,11 +157,16 @@ if(check_request_post_login()) {
 
 // check request section 
 
-function check_request_post_login() {
+function check_request_post() {
   if($_SERVER['REQUEST_METHOD'] === 'POST') {
-    if(isset($_POST['login']) && !(is_null($_POST)))
+    if(isset($_POST['submit']) && !(is_null($_POST['submit'])))
     return true ;
   }
+  return false;
+}
+function is_it_login() {
+  if($_POST['submit'] === 'login')
+    return true;
   return false;
 }
 // fetch data from database section
@@ -131,14 +182,6 @@ function get_passwords_user($database) {
   $statement->execute();
   return  $statement->fetchAll(PDO::FETCH_COLUMN,0);
 }
-function get_user_id($database,$index) {
-  $sql = "SELECT user_id FROM User where id=".$index;
-  $statement = $database->prepare($sql) ;
-  $statement->execute();
-  $result = $statement->fetchAll(PDO::FETCH_COLUMN,0);
-  return  $result[0];
-}
-
 // check error data base section 
 function is_user_email_correct($email) {
   if($_POST['email'] === $email) return true;
@@ -156,4 +199,49 @@ function error_message_no_account_or_email_wrong() {
 }
 function error_message_password_wrong() {
   return "Your Password Is Wrong";
+}
+// start log out action 
+function is_log_out() {
+  if(isset($_GET) && ! (is_null($_GET))) 
+    return true;
+  return false ;
+}
+function echo_hello_message() {
+  echo 'where you write anything';
+}
+function echo_bye_message() {
+  echo 'Nice to meet you , come back again';
+}
+function is_user_email_error($database) {
+  if($_POST['email'] === get_email($database))
+    return false;
+  return true;
+}
+function get_email($database) {
+  $sql = 
+    'SELECT user_email FROM user WHERE user_id = ' . $_COOKIE['user-id'];
+  $statement = $database->prepare($sql);
+  $statement->execute();
+  $result = $statement->fetchAll(PDO::FETCH_COLUMN, 0);
+  if($result == null) 
+    return null;
+  return $result[0];
+}
+function is_user_password_error($database) {
+  if($_POST['password'] === get_password($database))
+    return false;
+  return true;
+}
+function get_password($database) {
+  $sql = 
+    'SELECT user_password FROM user WHERE user_id = ' . $_COOKIE['user-id'];
+  $statement = $database->prepare($sql);
+  $statement->execute();
+  $result = $statement->fetchAll(PDO::FETCH_COLUMN, 0);
+  if($result == null) 
+    return null;
+  return $result[0];
+}
+function error_message_email_wrong() {
+  return "your email is wrong";
 }

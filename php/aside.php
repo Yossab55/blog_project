@@ -18,5 +18,11 @@
         <span>settings</span>
       </a>
     </li>
+    <li>
+      <a href="<?php echo $aside_path ?>login.php?$act='out'">
+        <i class="fa-solid fa-arrow-right-from-bracket"></i>
+        <span>log out</span>
+      </a>
+    </li>
   </ul>
 </aside>

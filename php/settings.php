@@ -20,7 +20,7 @@ if(is_request_method_post()) {
     $img_name = change_img_name();
     if(! is_it_image()) $upload_img = false;
     if(! is_it_new_image()) {
-      unlink_the_old_img() 
+      unlink_the_old_img();
     }
     if($upload_img) {
       upload_img_in_profile_folder();
