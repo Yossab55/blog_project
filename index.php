@@ -1,14 +1,17 @@
 <?php
 include('php/functions.php');
-include('php/connect.php');
+
 $script_name = get_script_name();
+if(! isset($_COOKIE['user-id']) || (is_null($_COOKIE))) {
+    header('Location: php/login.php');
+}
 $css_path = get_css_path_name_depend_on($script_name);
 $aside_path = get_aside_path_depend_on($script_name);
 $image_path = get_image_path_depend_on($script_name);
 
-setcookie('user-id',1 ,time() + strtotime('+1 year'), '/');
 //todo buttons like add friend there is no request for them 
 //* like and friend should be done by fetch 🥹
+include('php/connect.php');
 ?>
 
 
@@ -24,13 +27,28 @@ setcookie('user-id',1 ,time() + strtotime('+1 year'), '/');
     <div class="container">
       <section>
         <?php 
+        if(check_request_method_get()) {
+          if(check_request_search()) {
+            $search_blogs = get_search_blog($database);
+            if(count($search_blogs) > 0 ) {
+              echo_blogs($search_blogs, $database, false);
+            } else {
+              echo_there_is_no_blog_found();
+            }
+          }
+        } else {
           $result = get_friend_blogs($database);
           if(is_user_have_friend($result)) {
             echo_blogs($result, $database, false);
           } else {
             $random_blogs = get_random_blogs($database);
-            echo_blogs($random_blogs, $database, true);
+            if(count($random_blogs) > 0) {
+              echo_blogs($random_blogs, $database, true);
+            } else {
+
+            }
           }
+        }
         ?>
       </section>
 
@@ -89,7 +107,7 @@ function is_user_have_friend($result) {
 function echo_blogs($result, $database, $add_content_button) {
   foreach($result as $blog_data) {
     $user_name = get_user_name_by($blog_data['user-id']);
-    get_box_user_information_html($database, $user_name);
+    get_box_user_information_html($database, $user_name, $blog_data['categories']);
     if($add_content_button) {
       add_content_button();
     }
@@ -111,12 +129,14 @@ function get_user_name_by($id) {
   if($data == null) return null;
   return $data[0];
 }
-function get_box_user_information_html($database, $user_name) {
+function get_box_user_information_html($database, $user_name, $categories) {
   echo "<div class='box'> " ;
     echo "<div class='user-information'> " ;
       echo "<div class='content'>" ;
         echo "<img src='images/profile_images/".echo_user_profile_pic($database).".png' alt='' class ='circled-img'>" ;
         echo "<span class='user-name'> $user_name </span> " ;
+        if(! is_categories_null($categories))
+        echo "<span class='categories'>".make_categories($categories)."</span>";
       echo "</div>" ;
 }
 function add_content_button() {
@@ -126,6 +146,14 @@ function add_content_button() {
           echo "<i class='fa-solid fa-plus'></i>" ;
         echo "</button>" ;
       echo "</form>" ;
+}
+function is_categories_null($categories) {
+  if($categories === null) return true;
+  return false;
+}
+function make_categories($categories) {
+  $result = implode(" ", explode($categories, '/'));
+  return $result;
 }
 function get_blog_title_text($title, $text) {
   echo "<div class='content'> ";
@@ -167,4 +195,34 @@ function get_friends_id($database) {
   $statement = $database->prepare($sql);
   $statement->execute();
   return $statement->fetchAll(PDO::FETCH_COLUMN, 0);
+}
+function there_is_no_blogs() {
+  echo "<div class='box'>";
+    echo "<p>There is no blog is the site be the first one</p>";
+    echo "<a href='php/add_blog.php'> create your blog</a>";
+  echo "</div>";
+}
+//search bar 
+function check_request_method_get() {
+  if($_SERVER['REQUEST_METHOD'] === 'GET') 
+    return true;
+  return false;
+}
+function check_request_search() {
+  if(isset($_GET['search']) && ! (is_null($_GET))) 
+    return true;
+  return false;
+}
+function get_search_blog($database) {
+  $sql = 
+    'SELECT blog_id, blog_title, blog_text, blog_filename_image,
+    blog_time, categories FROM blog LIKE "%'.$_GET['search'].'%"';
+  $statement = $database->prepare($sql);
+  $statement->execute();
+  return $statement->fetchAll();
+}
+function echo_there_is_no_blog_found() {
+  echo "<div class='box;>";
+    echo "<p>There is no blog found</p>";
+  echo "</div>";
 }

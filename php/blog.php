@@ -2,6 +2,9 @@
 include('functions.php');
 include('connect.php');
 $script_name = get_script_name();
+if(! isset($_COOKIE['user-id']) || (is_null($_COOKIE))) {
+    header('Location: login.php');
+}
 $css_path = get_css_path_name_depend_on($script_name);
 $aside_path = get_aside_path_depend_on($script_name);
 $image_path = get_image_path_depend_on($script_name);

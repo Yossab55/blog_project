@@ -3,7 +3,7 @@ include('functions.php');
 include("connect.php");
 $script_name = get_script_name();
 $css_path = get_css_path_name_depend_on($script_name);
-// $script_name = (is_log_out()) ? 'logout' : get_script_name();
+
 
 $is_error = false ;
 $log_out_email_error = false;
@@ -33,6 +33,7 @@ if(check_request_post()) {
         if($index_and_boolean_email[1]) {
           if($passwords[$index_and_boolean_email[0]] === $_POST['password']) {
             $id = get_user_id($database,$index_and_boolean_email[0]);
+            setcookie('user-id', $id, time() + strtotime('+1 month'), '/', null, false, true);
             header('Location: ../index.php');
           } else {
             is_error_true($is_error);
@@ -54,7 +55,8 @@ if(check_request_post()) {
       is_error_true($is_error);
       $message_is_error = error_message_password_wrong();
     } else {
-      //المفروض هنا انا بخرجه من الموقع مش اكتر لان ده تخريج مش مسح بيانات 
+      setcookie('user-id', $id, time() - 100, '/', null, false, true);
+      echo "<script>window.close();</script>";
     }
   }
 }
@@ -182,6 +184,14 @@ function get_passwords_user($database) {
   $statement->execute();
   return  $statement->fetchAll(PDO::FETCH_COLUMN,0);
 }
+function get_user_id($database, $index) {
+  $sql = 
+    'SELECT user_id FROM user ';
+  $statement = $database->prepare($sql);
+  $statement->execute();
+  $ids = $statement->fetchAll(PDO::FETCH_COLUMN, 0);
+  return $ids[$index];
+}
 // check error data base section 
 function is_user_email_correct($email) {
   if($_POST['email'] === $email) return true;
@@ -202,7 +212,7 @@ function error_message_password_wrong() {
 }
 // start log out action 
 function is_log_out() {
-  if(isset($_GET) && ! (is_null($_GET))) 
+  if(isset($_GET['act']) && ! (is_null($_GET))) 
     return true;
   return false ;
 }

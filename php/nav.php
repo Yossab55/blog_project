@@ -3,7 +3,8 @@
       <img src="<?php echo $image_path ?>site_images/logo.png" alt="Bloger" class="circled-img">
       <form action="" method="post">
         <label >
-          <input type="text" name="categories" >
+          <input type="text" name="search"
+          value='<?php if(isset($_GET['search'])) echo $_GET['search'] ?>' >
           <button type="submit">
             <i class="fa-solid fa-magnifying-glass"></i>
           </button>

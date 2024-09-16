@@ -2,7 +2,10 @@
 include('functions.php');
 include('connect.php');
 $script_name = get_script_name();
-$css_path = get_path_name_depend_on($script_name);
+if(! isset($_COOKIE['user-id']) || (is_null($_COOKIE))) {
+    header('Location: login.php');
+}
+$css_path = get_css_path_name_depend_on($script_name);
 $is_error = false;
 if(is_request_method_post()) {
   if(is_request_from_add_comment()) {

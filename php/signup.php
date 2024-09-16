@@ -1,6 +1,9 @@
 <?php
 include('../php/functions.php');
 $script_name = get_script_name();
+if(! isset($_COOKIE['user-id']) || (is_null($_COOKIE))) {
+    header('Location: login.php');
+}
 $css_path = get_path_name_depend_on($script_name);
 
 $error_exist = false ;
